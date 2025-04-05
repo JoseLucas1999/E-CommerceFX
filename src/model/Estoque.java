@@ -2,22 +2,22 @@ package model;
 
 public class Estoque {
     private int id;
-    private Produto produto;
+    private String nome;  // Agora armazenamos o nome do produto diretamente
     private int quantidade;
 
     public Estoque() {}
 
-    public Estoque(int id, Produto produto, int quantidade) {
+    public Estoque(int id, String nome, int quantidade) {
         this.id = id;
-        this.produto = produto;
+        this.nome = nome;
         this.quantidade = quantidade;
     }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public Produto getProduto() { return produto; }
-    public void setProduto(Produto produto) { this.produto = produto; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
     public int getQuantidade() { return quantidade; }
     public void setQuantidade(int quantidade) { this.quantidade = quantidade; }

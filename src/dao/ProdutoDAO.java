@@ -11,21 +11,36 @@ import util.DBConnection;
 
 public class ProdutoDAO {
 //--------------------------------------------------------------------------------------------
-    public void inserir(Produto produto) {
-        String sql = "INSERT INTO produto (nome, descricao, preco_base) VALUES (?, ?, ?)";
+	public void inserir(Produto produto) {
+	    String sqlProduto = "INSERT INTO produto (nome, descricao, preco_base) VALUES (?, ?, ?)";
+	    String sqlEstoque = "INSERT INTO estoque (nome, quantidade) VALUES (?, ?)";  // Inserir no estoque
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+	    try (Connection conn = DBConnection.getConnection();
+	         PreparedStatement stmtProduto = conn.prepareStatement(sqlProduto, PreparedStatement.RETURN_GENERATED_KEYS);
+	         PreparedStatement stmtEstoque = conn.prepareStatement(sqlEstoque)) {
 
-            stmt.setString(1, produto.getNome());
-            stmt.setString(2, produto.getDescricao());
-            stmt.setDouble(3, produto.getPrecoBase());
-            stmt.executeUpdate();
+	        // Inserir o produto
+	        stmtProduto.setString(1, produto.getNome());
+	        stmtProduto.setString(2, produto.getDescricao());
+	        stmtProduto.setDouble(3, produto.getPrecoBase());
+	        stmtProduto.executeUpdate();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	        // Obter o ID do produto inserido
+	        ResultSet rs = stmtProduto.getGeneratedKeys();
+	        if (rs.next()) {
+	            int idProduto = rs.getInt(1);
+
+	            // Inserir no estoque com quantidade 0
+	            stmtEstoque.setString(1, produto.getNome());  // Usando o nome do produto
+	            stmtEstoque.setInt(2, 0);  // Quantidade inicial é 0
+	            stmtEstoque.executeUpdate();
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
   //--------------------------------------------------------------------------------------------
     public List<Produto> listar() {
         List<Produto> lista = new ArrayList<>();

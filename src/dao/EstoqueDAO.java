@@ -8,32 +8,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Estoque;
-import model.Produto;
 import util.DBConnection;
 
 public class EstoqueDAO {
 
     public List<Estoque> listarEstoque() {
         List<Estoque> lista = new ArrayList<>();
-        String sql = "SELECT e.id, e.quantidade, p.id AS produto_id, p.nome, p.descricao, p.preco_base " +
-                     "FROM estoque e JOIN produto p ON e.produto_id = p.id";
+        String sql = "SELECT id, nome, quantidade FROM estoque";  // Agora consulta a tabela estoque
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Produto produto = new Produto();
-                produto.setId(rs.getInt("produto_id"));
-                produto.setNome(rs.getString("nome"));
-                produto.setDescricao(rs.getString("descricao"));
-                produto.setPrecoBase(rs.getDouble("preco_base"));
-
                 Estoque estoque = new Estoque();
                 estoque.setId(rs.getInt("id"));
-                estoque.setProduto(produto);
+                estoque.setNome(rs.getString("nome"));
                 estoque.setQuantidade(rs.getInt("quantidade"));
-
                 lista.add(estoque);
             }
 
@@ -43,53 +34,50 @@ public class EstoqueDAO {
 
         return lista;
     }
-    
-    public Estoque buscarPorProdutoId(int produtoId) {
-        String sql = "SELECT * FROM estoque WHERE id_produto = ?";
+
+    public Estoque buscarPorId(int id) {
+        String sql = "SELECT * FROM estoque WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, produtoId);
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 Estoque estoque = new Estoque();
-                Produto produto = new Produto();
-                produto.setId(rs.getInt("id_produto"));
-
                 estoque.setId(rs.getInt("id"));
-                estoque.setProduto(produto);
+                estoque.setNome(rs.getString("nome"));
                 estoque.setQuantidade(rs.getInt("quantidade"));
 
                 return estoque;
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    public void atualizarQuantidade(int produtoId, int novaQuantidade) {
-        String sql = "UPDATE estoque SET quantidade = ? WHERE id_produto = ?";
+    public void atualizarQuantidade(int id, int novaQuantidade) {
+        String sql = "UPDATE estoque SET quantidade = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, novaQuantidade);
-            stmt.setInt(2, produtoId);
+            stmt.setInt(2, id);
             stmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void diminuirQuantidade(int produtoId, int quantidadeVendida) {
-        Estoque estoque = buscarPorProdutoId(produtoId);
+    public void diminuirQuantidade(int id, int quantidadeVendida) {
+        Estoque estoque = buscarPorId(id);
         if (estoque != null) {
             int novaQuantidade = estoque.getQuantidade() - quantidadeVendida;
-            atualizarQuantidade(produtoId, novaQuantidade);
+            atualizarQuantidade(id, novaQuantidade);
         }
     }
 }

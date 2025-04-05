@@ -1,13 +1,20 @@
 package view;
 
 import dao.EstoqueDAO;
-import javafx.collections.*;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 import model.Estoque;
 
 public class VisualizarEstoqueView {
@@ -22,18 +29,31 @@ public class VisualizarEstoqueView {
         filtroNome = new TextField();
         filtroNome.setPromptText("Filtrar por nome");
 
+        // Definindo as colunas da tabela
         TableColumn<Estoque, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
 
+        // Atualizando a exibição para mostrar o nome diretamente, sem necessidade do Produto
         TableColumn<Estoque, String> colProduto = new TableColumn<>("Produto");
-        colProduto.setCellValueFactory(data ->
-            new SimpleStringProperty(data.getValue().getProduto().getNome()));
+        colProduto.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNome()));
 
         TableColumn<Estoque, Integer> colQtd = new TableColumn<>("Quantidade");
         colQtd.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
+        
+        // Tornando a coluna de quantidade editável
+        colQtd.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        colQtd.setOnEditCommit(event -> {
+            Estoque estoque = event.getRowValue();
+            Integer novaQuantidade = event.getNewValue();
+            if (novaQuantidade != null) {
+                estoque.setQuantidade(novaQuantidade);
+                atualizarEstoque(estoque);  // Atualiza no banco de dados
+            }
+        });
 
         tabela.getColumns().addAll(colId, colProduto, colQtd);
         tabela.setItems(dados);
+        tabela.setEditable(true);  // Permite edição na tabela
 
         // Botões
         Button btnAtualizar = new Button("🔄 Atualizar");
@@ -61,7 +81,12 @@ public class VisualizarEstoqueView {
         String filtro = filtroNome.getText().toLowerCase();
 
         dados.setAll(dao.listarEstoque().stream()
-            .filter(e -> e.getProduto().getNome().toLowerCase().contains(filtro))
+            .filter(e -> e.getNome().toLowerCase().contains(filtro))  // Usando nome diretamente
             .toList());
+    }
+
+    private void atualizarEstoque(Estoque estoque) {
+        EstoqueDAO dao = new EstoqueDAO();
+        dao.atualizarQuantidade(estoque.getId(), estoque.getQuantidade());  // Atualiza no banco de dados
     }
 }

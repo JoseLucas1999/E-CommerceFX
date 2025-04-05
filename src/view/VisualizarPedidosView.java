@@ -31,10 +31,17 @@ public class VisualizarPedidosView {
         // Colunas
         TableColumn<Pedido, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-
+        
+     // Coluna para o nome do cliente
         TableColumn<Pedido, String> colCliente = new TableColumn<>("Cliente");
-        colCliente.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getCliente().getNome()));
+        colCliente.setCellValueFactory(data -> 
+            new SimpleStringProperty(data.getValue().getCliente().getNome()));
+
+        // Coluna para o número do telefone do cliente
+        TableColumn<Pedido, String> colNumero = new TableColumn<>("Número");
+        colNumero.setCellValueFactory(data -> 
+            new SimpleStringProperty(data.getValue().getCliente().getTelefone()));
+
 
         TableColumn<Pedido, String> colProduto = new TableColumn<>("Produto");
         colProduto.setCellValueFactory(data ->
@@ -74,8 +81,11 @@ public class VisualizarPedidosView {
             }
         });
 
-        tabela.getColumns().addAll(colId, colCliente, colProduto, colStatus, colDataEntrega, colAlterarStatus);
+        tabela.getColumns().addAll(colId, colCliente, colNumero, colProduto, colStatus, colDataEntrega, colAlterarStatus);
+
         tabela.setItems(dados);
+        
+        
 
         // Botões
         Button btnAtualizar = new Button("🔄 Atualizar");

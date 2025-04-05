@@ -58,10 +58,11 @@ public class PedidoDAO {
   //-------------------------------------------------------------------------------------------
     public List<Pedido> listarTodos() {
         List<Pedido> lista = new ArrayList<>();
-        String sql = "SELECT p.*, c.nome as nome_cliente, pr.nome as nome_produto " +
+        String sql = "SELECT p.*, c.nome as nome_cliente, c.telefone as telefone_cliente, pr.nome as nome_produto " +
                      "FROM pedido p " +
                      "JOIN cliente c ON p.id_cliente = c.id " +
                      "JOIN produto pr ON p.id_produto = pr.id";
+        
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -72,11 +73,12 @@ public class PedidoDAO {
 
                 Cliente c = new Cliente();
                 c.setId(rs.getInt("id_cliente"));
-                c.setNome(rs.getString("nome_cliente")); // Nome importante para a tabela
+                c.setNome(rs.getString("nome_cliente")); // Nome do cliente
+                c.setTelefone(rs.getString("telefone_cliente")); // Telefone do cliente
 
                 Produto pr = new Produto();
                 pr.setId(rs.getInt("id_produto"));
-                pr.setNome(rs.getString("nome_produto")); // Nome importante para a tabela
+                pr.setNome(rs.getString("nome_produto")); // Nome do produto
 
                 p.setCliente(c);
                 p.setProduto(pr);
@@ -93,6 +95,7 @@ public class PedidoDAO {
         }
         return lista;
     }
+
 
     //-------------------------------------------------------------------------------------------    
     public List<Pedido> listarPorStatus(StatusPedido status) {

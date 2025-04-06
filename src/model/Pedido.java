@@ -8,10 +8,11 @@ public class Pedido {
     private String dataEntrega;
     private double valorTotal;
     private StatusPedido status;
+    private StatusPagamento statusPagamento;
 
     public Pedido() {}
 
-    public Pedido(int id, Cliente cliente, Produto produto, String dataPedido, String dataEntrega, double valorTotal, StatusPedido status) {
+    public Pedido(int id, Cliente cliente, Produto produto, String dataPedido, String dataEntrega, double valorTotal, StatusPedido status, StatusPagamento statusPagamento) {
         this.id = id;
         this.cliente = cliente;
         this.produto = produto;
@@ -19,6 +20,7 @@ public class Pedido {
         this.dataEntrega = dataEntrega;
         this.valorTotal = valorTotal;
         this.status = status;
+        this.statusPagamento = statusPagamento;
     }
 
     public int getId() { return id; }
@@ -42,10 +44,13 @@ public class Pedido {
     public StatusPedido getStatus() { return status; }
     public void setStatus(StatusPedido status) { this.status = status; }
     
+    public StatusPagamento getStatusPagamento() { return statusPagamento; }
+    public void setStatusPagamento(StatusPagamento statusPagamento) {this.statusPagamento = statusPagamento;}
+    
     // Para debug ou logs
     @Override
     public String toString() {
-        return "Pedido{" +
+        return "pedido{" +
                 "id=" + id +
                 ", cliente=" + (cliente != null ? cliente.getNome() : "null") +
                 ", produto=" + (produto != null ? produto.getNome() : "null") +
@@ -53,6 +58,7 @@ public class Pedido {
                 ", dataEntrega='" + dataEntrega + '\'' +
                 ", valorTotal=" + valorTotal +
                 ", status=" + status +
+                ", statusPagamento=" + statusPagamento +
                 '}';
     }
 }

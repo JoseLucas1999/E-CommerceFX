@@ -59,7 +59,8 @@ public class FazerPedidoView {
                         dataPedido,
                         dataEntrega.toString(),
                         valorTotal,
-                        StatusPedido.AGUARDANDO_PRODUCAO
+                        StatusPedido.AGUARDANDO_PRODUCAO,
+                        StatusPagamento.PENDENTE
                 );
 
                 PedidoDAO pedidoDAO = new PedidoDAO();

@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Pedido;
+import model.StatusPagamento;
 import model.StatusPedido;
 
 public class VisualizarPedidosView {
@@ -61,10 +62,12 @@ public class VisualizarPedidosView {
         TableColumn<Pedido, String> colDataEntrega = new TableColumn<>("Data de Entrega");
         colDataEntrega.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getDataEntrega()));
-
+     // Coluna para alterar status do pedido
+//----------------------------------------------------------------------------------
         TableColumn<Pedido, StatusPedido> colAlterarStatus = new TableColumn<>("Alterar Status");
         colAlterarStatus.setCellFactory(tc -> new TableCell<>() {
             private final ComboBox<StatusPedido> comboBox = new ComboBox<>();
+            
 
             {
                 comboBox.getItems().addAll(StatusPedido.values());
@@ -87,13 +90,38 @@ public class VisualizarPedidosView {
                 }
             }
         });
+//----------------------------------------------------------------------------------        
+        // ✅ Coluna para status de pagamento
+        TableColumn<Pedido, StatusPagamento> colPagamento = new TableColumn<>("Pagamento");
+        colPagamento.setCellFactory(tc -> new TableCell<>() {
+            private final ComboBox<StatusPagamento> comboBox = new ComboBox<>();
 
-        tabela.getColumns().addAll(colId, colCliente, colNumero, colProduto, colStatus, colDataEntrega, colAlterarStatus);
+            {
+                comboBox.getItems().addAll(StatusPagamento.values());
+                comboBox.setOnAction(e -> {
+                    Pedido pedido = getTableView().getItems().get(getIndex());
+                    StatusPagamento novoStatus = comboBox.getValue();
+                    atualizarStatusPagamento(pedido, novoStatus);
+                });
+            }
 
+            @Override
+            protected void updateItem(StatusPagamento item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    Pedido pedido = getTableView().getItems().get(getIndex());
+                    comboBox.setValue(pedido.getStatusPagamento());
+                    setGraphic(comboBox);
+                }
+            }
+        });
+
+        // Adicionando todas as colunas
+        tabela.getColumns().addAll(colId, colCliente, colNumero, colProduto, colStatus,colPagamento, colDataEntrega, colAlterarStatus);
         tabela.setItems(dados);
         
-        
-
         // Botões
         Button btnAtualizar = new Button("🔄 Atualizar");
         Button btnVoltar = new Button("⬅ Voltar ao Menu");
@@ -154,20 +182,17 @@ public class VisualizarPedidosView {
      });
 
 
-
+//---------------------------------------------------------------------------------
         filtroStatus.setOnAction(e -> carregarPedidos());
 
-        HBox botoes = new HBox(10, filtroStatus, btnAtualizar, btnVoltar,btnExcluir, btnExportarPDF);
+        HBox botoes = new HBox(10, filtroStatus, btnAtualizar, btnVoltar, btnExcluir, btnExportarPDF);
         VBox layout = new VBox(10, botoes, tabela);
         layout.setStyle("-fx-padding: 20;");
-
         carregarPedidos();
-
-        return new Scene(layout, 950, 500);
+        return new Scene(layout, 1050, 500);
         /*Scene scene = new Scene(layout, 950, 500);
         scene.getStylesheets().add(getClass().getResource("visualizar_pedidos.css").toExternalForm());
         return scene;*/
-
     }
 
     private void carregarPedidos() {
@@ -194,6 +219,15 @@ public class VisualizarPedidosView {
                 dao.atualizarDataEntrega(pedido.getId(), dataEntrega);
             }
 
+            carregarPedidos();
+        }
+    }
+    // ✅ Novo método para atualizar o status de pagamento
+    private void atualizarStatusPagamento(Pedido pedido, StatusPagamento novoStatusPagamento) {
+        if (novoStatusPagamento != null && novoStatusPagamento != pedido.getStatusPagamento()) {
+            PedidoDAO dao = new PedidoDAO();
+            pedido.setStatusPagamento(novoStatusPagamento);
+            dao.atualizarStatusPagamento(pedido.getId(), novoStatusPagamento); // ← esse método você deve implementar no DAO
             carregarPedidos();
         }
     }

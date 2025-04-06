@@ -12,6 +12,7 @@ import java.util.List;
 import model.Cliente;
 import model.Pedido;
 import model.Produto;
+import model.StatusPagamento;
 import model.StatusPedido;
 import util.DBConnection;
 
@@ -54,10 +55,11 @@ public class PedidoDAO {
   //-------------------------------------------------------------------------------------------
     public List<Pedido> listarTodos() {
         List<Pedido> lista = new ArrayList<>();
-        String sql = "SELECT p.*, c.nome as nome_cliente, c.telefone as telefone_cliente, pr.nome as nome_produto " +
-                     "FROM pedido p " +
-                     "JOIN cliente c ON p.id_cliente = c.id " +
-                     "JOIN produto pr ON p.id_produto = pr.id";
+        String sql = "SELECT p.*, c.nome as nome_cliente, c.telefone as telefone_cliente, pr.nome as nome_produto, " +
+                "p.status_pagamento " + // Garantindo que essa coluna esteja no SELECT
+                "FROM pedido p " +
+                "JOIN cliente c ON p.id_cliente = c.id " +
+                "JOIN produto pr ON p.id_produto = pr.id";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -75,13 +77,14 @@ public class PedidoDAO {
                 Produto pr = new Produto();
                 pr.setId(rs.getInt("id_produto"));
                 pr.setNome(rs.getString("nome_produto")); // Nome do produto
-
                 p.setCliente(c);
                 p.setProduto(pr);
                 p.setDataPedido(rs.getString("data_pedido"));
                 p.setDataEntrega(rs.getString("data_entrega"));
                 p.setValorTotal(rs.getDouble("valor_total"));
                 p.setStatus(StatusPedido.valueOf(rs.getString("status")));
+                p.setStatusPagamento(StatusPagamento.valueOf(rs.getString("status_pagamento")));
+
 
                 lista.add(p);
             }
@@ -96,11 +99,11 @@ public class PedidoDAO {
     //-------------------------------------------------------------------------------------------    
     public List<Pedido> listarPorStatus(StatusPedido status) {
         List<Pedido> pedidos = new ArrayList<>();
-        String sql = "SELECT p.*, c.nome as nome_cliente, pr.nome as nome_produto " +
-                     "FROM pedido p " +
-                     "JOIN cliente c ON p.id_cliente = c.id " +
-                     "JOIN produto pr ON p.id_produto = pr.id " +
-                     "WHERE p.status = ?";
+        String sql = "SELECT p.*, c.nome as nome_cliente, pr.nome as nome_produto, p.status_pagamento " +
+                "FROM pedido p " +
+                "JOIN cliente c ON p.id_cliente = c.id " +
+                "JOIN produto pr ON p.id_produto = pr.id " +
+                "WHERE p.status = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -126,6 +129,7 @@ public class PedidoDAO {
                 p.setDataEntrega(rs.getString("data_entrega"));
                 p.setValorTotal(rs.getDouble("valor_total"));
                 p.setStatus(StatusPedido.valueOf(rs.getString("status")));
+                p.setStatusPagamento(StatusPagamento.valueOf(rs.getString("status_pagamento")));
 
                 pedidos.add(p);
             }
@@ -139,11 +143,11 @@ public class PedidoDAO {
     public List<Pedido> listarPedidosProntosParaEntrega() {
         List<Pedido> pedidos = new ArrayList<>();
         String sql = "SELECT p.*, c.id as cid, c.nome as cnome, c.telefone, c.endereco, c.email, " +
-                     "pr.id as pid, pr.nome as pnome, pr.descricao, pr.preco_base " +
-                     "FROM pedido p " +
-                     "JOIN cliente c ON p.id_cliente = c.id " +
-                     "JOIN produto pr ON p.id_produto = pr.id " +
-                     "WHERE p.status = 'PRONTO_PARA_ENTREGA'";
+                "pr.id as pid, pr.nome as pnome, pr.descricao, pr.preco_base, p.status_pagamento " +
+                "FROM pedido p " +
+                "JOIN cliente c ON p.id_cliente = c.id " +
+                "JOIN produto pr ON p.id_produto = pr.id " +
+                "WHERE p.status = 'PRONTO_PARA_ENTREGA'";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -174,6 +178,7 @@ public class PedidoDAO {
                 pedido.setDataEntrega(rs.getString("data_entrega"));
                 pedido.setValorTotal(rs.getDouble("valor"));
                 pedido.setStatus(StatusPedido.valueOf(rs.getString("status")));
+                pedido.setStatusPagamento(StatusPagamento.valueOf(rs.getString("status_pagamento")));
 
                 pedidos.add(pedido);
             }
@@ -206,9 +211,20 @@ public class PedidoDAO {
             e.printStackTrace();
         }
     }
+//-----------------------------------------------------------------------------------------
+    public void atualizarStatusPagamento(int idPedido, StatusPagamento novoStatus) {
+        String sql = "UPDATE pedido SET status_pagamento = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, novoStatus.name());
+            stmt.setInt(2, idPedido);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-
-  //-------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------
     public void excluir(int pedidoId) {
         String sql = "DELETE FROM pedido WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();

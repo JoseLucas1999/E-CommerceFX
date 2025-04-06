@@ -1,5 +1,6 @@
 package view;
 
+import dao.ClienteDAO;
 import dao.PedidoDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +10,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
+import model.Cliente;
 import model.Pedido;
 import model.StatusPedido;
 
@@ -96,10 +98,26 @@ public class VisualizarPedidosView {
             MenuView menu = new MenuView();
             stage.setScene(menu.getScene(stage));
         });
+        
+        Button btnExcluir = new Button("🗑 Excluir");
+        btnExcluir.setOnAction(e -> {
+            Pedido selecionado = tabela.getSelectionModel().getSelectedItem();
+            if (selecionado != null) {
+            	PedidoDAO dao = new PedidoDAO();
+            	dao.excluir(selecionado.getId());
+            	dados.remove(selecionado);
+            }else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Atenção");
+                alert.setHeaderText("Nenhum pedido selecionado");
+                alert.setContentText("Selecione um pedido para excluir.");
+                alert.showAndWait();
+            }
+        });
 
         filtroStatus.setOnAction(e -> carregarPedidos());
 
-        HBox botoes = new HBox(10, filtroStatus, btnAtualizar, btnVoltar);
+        HBox botoes = new HBox(10, filtroStatus, btnAtualizar, btnVoltar,btnExcluir);
         VBox layout = new VBox(10, botoes, tabela);
         layout.setStyle("-fx-padding: 20;");
 

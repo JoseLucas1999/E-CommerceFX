@@ -78,7 +78,7 @@ public class ClienteDAO {
 
 
   //------------------------------------------------------------------------------------------------------
-    public void deletar(int id) {
+    public void excluir(int id) {
         String sql = "DELETE FROM cliente WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();

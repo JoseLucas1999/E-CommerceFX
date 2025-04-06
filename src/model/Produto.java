@@ -5,9 +5,18 @@ public class Produto {
     private String nome;
     private String descricao;
     private double precoBase;
+    private int quantidade;
 
     public Produto() {}
 
+    public Produto(int id, String nome, String descricao, double precoBase, int quantidade) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.precoBase = precoBase;
+        this.quantidade = quantidade;
+    }
+    
     public Produto(int id, String nome, String descricao, double precoBase) {
         this.id = id;
         this.nome = nome;
@@ -31,4 +40,7 @@ public class Produto {
 
     public double getPrecoBase() { return precoBase; }
     public void setPrecoBase(double precoBase) { this.precoBase = precoBase; }
+    
+    public int getQuantidade() { return quantidade; }
+    public void setQuantidade(int quantidade) { this.quantidade = quantidade; }
 }

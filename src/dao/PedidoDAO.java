@@ -45,10 +45,6 @@ public class PedidoDAO {
                 pedido.setId(rs.getInt(1));
             }
 
-            // Atualiza o estoque após salvar o pedido
-            EstoqueDAO estoqueDAO = new EstoqueDAO();
-            estoqueDAO.diminuirQuantidade(pedido.getProduto().getId(), 1); // Altere 1 para a quantidade real, se houver
-
         } catch (Exception e) {
             System.out.println("Erro ao salvar o pedido: " + e.getMessage());
             e.printStackTrace();
@@ -213,7 +209,7 @@ public class PedidoDAO {
 
 
   //-------------------------------------------------------------------------------------------
-    public void deletar(int pedidoId) {
+    public void excluir(int pedidoId) {
         String sql = "DELETE FROM pedido WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

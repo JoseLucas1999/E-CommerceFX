@@ -1,18 +1,23 @@
 package view;
 
+import java.util.List;
+
 import dao.ClienteDAO;
+import dao.PedidoDAO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Cliente;
-
-import java.util.List;
 
 public class VisualizarClientesView {
 
@@ -79,9 +84,29 @@ public class VisualizarClientesView {
             MenuView menu = new MenuView();
             stage.setScene(menu.getScene(stage));
         });
+        
+        Button btnExcluir = new Button("🗑 Excluir");
+        btnExcluir.setOnAction(e -> {
+            Cliente selecionado = tabela.getSelectionModel().getSelectedItem();
+            if (selecionado != null) {
+            	PedidoDAO pedidoDAO = new PedidoDAO();
+            	pedidoDAO.excluir(selecionado.getId());
+            	ClienteDAO dao = new ClienteDAO();
+            	dao.excluir(selecionado.getId());
+            	dados.remove(selecionado);
+            }else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Atenção");
+                alert.setHeaderText("Nenhum cliente selecionado");
+                alert.setContentText("Selecione um cliente para excluir.");
+                alert.showAndWait();
+            }
+        });
 
-        VBox layout = new VBox(10, btnVoltar, tabela);
+        HBox botoes = new HBox(10, btnVoltar, btnExcluir);
+        VBox layout = new VBox(10, botoes, tabela);
         layout.setStyle("-fx-padding: 20;");
+
 
         carregarClientes();
 

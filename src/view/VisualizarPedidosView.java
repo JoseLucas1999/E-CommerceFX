@@ -1,21 +1,26 @@
 package view;
 
-import dao.ClienteDAO;
+import java.time.LocalDate;
+import java.util.List;
+
 import dao.PedidoDAO;
+import export.PedidoPDFExporter;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.beans.property.SimpleStringProperty;
-import model.Cliente;
 import model.Pedido;
 import model.StatusPedido;
-
-import java.time.LocalDate;
-import java.util.List;
 
 public class VisualizarPedidosView {
 
@@ -114,10 +119,45 @@ public class VisualizarPedidosView {
                 alert.showAndWait();
             }
         });
+        
+        ComboBox<String> comboStatus = new ComboBox<>();
+     // Adicionando as opções de status no ComboBox
+     comboStatus.getItems().addAll("Todos", "AGUARDANDO_PRODUCAO", "EM_PRODUCAO", "PRONTO_ENTREGA", "ENTREGUE");
+     comboStatus.setValue("Todos");  // Inicializando com o valor "Todos"
+
+     // Botão para exportar PDF
+     Button btnExportarPDF = new Button("Exportar PDF");
+
+     // Evento de clique no botão
+     btnExportarPDF.setOnAction(e -> {
+         String statusSelecionado = comboStatus.getValue();  // Pega o status selecionado
+         try {
+             // Chama o método para gerar o PDF, passando o status e o stage
+             new PedidoPDFExporter().gerarPDF(statusSelecionado);
+
+             // Exibe um alerta de sucesso
+             Alert alert = new Alert(Alert.AlertType.INFORMATION);
+             alert.setTitle("Exportação de PDF");
+             alert.setHeaderText("Exportação Concluída");
+             alert.setContentText("O PDF foi gerado com sucesso.");
+             alert.showAndWait();
+         } catch (Exception ex) {
+             ex.printStackTrace();  // Imprime o erro no console para depuração
+
+             // Exibe um alerta de erro
+             Alert alert = new Alert(Alert.AlertType.ERROR);
+             alert.setTitle("Erro ao Exportar PDF");
+             alert.setHeaderText("Erro na exportação");
+             alert.setContentText("Houve um problema ao tentar gerar o PDF.");
+             alert.showAndWait();
+         }
+     });
+
+
 
         filtroStatus.setOnAction(e -> carregarPedidos());
 
-        HBox botoes = new HBox(10, filtroStatus, btnAtualizar, btnVoltar,btnExcluir);
+        HBox botoes = new HBox(10, filtroStatus, btnAtualizar, btnVoltar,btnExcluir, btnExportarPDF);
         VBox layout = new VBox(10, botoes, tabela);
         layout.setStyle("-fx-padding: 20;");
 

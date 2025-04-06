@@ -12,7 +12,7 @@ import model.*;
 import java.time.LocalDate;
 import java.util.List;
 
-public class PedidoView {
+public class FazerPedidoView {
 
     public Scene getScene(Stage stage) {
         Label title = new Label("Novo Pedido");
@@ -82,10 +82,27 @@ public class PedidoView {
             MenuView menu = new MenuView();
             stage.setScene(menu.getScene(stage));
         });
+        
+        title.getStyleClass().add("label-title");
+        clienteCombo.getStyleClass().add("combo-box");
+        produtoCombo.getStyleClass().add("combo-box");
+        dataEntregaPicker.getStyleClass().add("date-picker");
+        valorTotalField.getStyleClass().add("text-field");
+        salvarBtn.getStyleClass().add("button");
+        voltarBtn.getStyleClass().add("button");
+        msgLabel.getStyleClass().add("label-msg");
 
+        /*VBox vbox = new VBox(10, title, clienteCombo, produtoCombo, dataEntregaPicker, valorTotalField, salvarBtn, voltarBtn, msgLabel);
+        vbox.getStyleClass().add("vbox-pedido");
+
+        Scene scene = new Scene(vbox, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("pedido.css").toExternalForm());
+        return scene;*/
+        
         VBox vbox = new VBox(10, title, clienteCombo, produtoCombo, dataEntregaPicker, valorTotalField, salvarBtn, voltarBtn, msgLabel);
         vbox.setStyle("-fx-padding: 20; -fx-alignment: center;");
 
         return new Scene(vbox, 400, 400);
+
     }
 }

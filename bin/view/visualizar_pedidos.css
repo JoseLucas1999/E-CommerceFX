@@ -1,0 +1,60 @@
+/* Fundo geral */
+.vbox {
+    -fx-background-color: #2e2e2e;
+}
+
+/* Tabela */
+.table-view {
+    -fx-background-color: #3a3a3a;
+    -fx-table-cell-border-color: #4a4a4a;
+    -fx-control-inner-background: #3a3a3a;
+    -fx-text-background-color: white;
+}
+
+/* Cabeçalho da tabela */
+.table-view .column-header-background {
+    -fx-background-color: #444444;
+}
+
+/* Texto do cabeçalho */
+.table-view .label {
+    -fx-text-fill: #ffffff;
+}
+
+/* Linhas da tabela */
+.table-row-cell {
+    -fx-background-color: #3a3a3a;
+    -fx-text-fill: white;
+}
+
+/* Linha ao passar o mouse */
+.table-row-cell:hover {
+    -fx-background-color: #505050;
+}
+
+/* ComboBox */
+.combo-box, .combo-box-base {
+    -fx-background-color: #444444;
+    -fx-border-color: #666666;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-text-fill: #ffffff;
+}
+
+/* Botões */
+.button {
+    -fx-background-color: #444444;
+    -fx-text-fill: #ffffff;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+/* Hover do botão */
+.button:hover {
+    -fx-background-color: #555555;
+}
+
+/* HBox com os botões e filtro */
+.hbox {
+    -fx-background-color: #2e2e2e;
+}

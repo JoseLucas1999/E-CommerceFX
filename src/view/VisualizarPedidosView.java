@@ -42,11 +42,11 @@ public class VisualizarPedidosView {
         colNumero.setCellValueFactory(data -> 
             new SimpleStringProperty(data.getValue().getCliente().getTelefone()));
 
-
+        // Coluna para o produto
         TableColumn<Pedido, String> colProduto = new TableColumn<>("Produto");
         colProduto.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getProduto().getNome()));
-
+     // Coluna para o status
         TableColumn<Pedido, String> colStatus = new TableColumn<>("Status");
         colStatus.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getStatus().name()));
@@ -106,6 +106,10 @@ public class VisualizarPedidosView {
         carregarPedidos();
 
         return new Scene(layout, 950, 500);
+        /*Scene scene = new Scene(layout, 950, 500);
+        scene.getStylesheets().add(getClass().getResource("visualizar_pedidos.css").toExternalForm());
+        return scene;*/
+
     }
 
     private void carregarPedidos() {

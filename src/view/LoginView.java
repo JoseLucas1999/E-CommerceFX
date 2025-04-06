@@ -41,7 +41,21 @@ public class LoginView {
                 messageLabel.setText("❌ Usuário ou senha inválidos!");
             }
         });
+        
+        title.getStyleClass().add("label-title");
+        usernameField.getStyleClass().add("text-field");
+        passwordField.getStyleClass().add("password-field");
+        loginButton.getStyleClass().add("button");
+        messageLabel.getStyleClass().add("label-message");
 
+
+        /*VBox vbox = new VBox(10, title, usernameField, passwordField, loginButton, messageLabel);
+        vbox.getStyleClass().add("vbox-login");
+
+        Scene scene = new Scene(vbox, 300, 200);
+        scene.getStylesheets().add(getClass().getResource("login.css").toExternalForm());
+        return scene;*/
+        
         VBox vbox = new VBox(10, title, usernameField, passwordField, loginButton, messageLabel);
         vbox.setStyle("-fx-padding: 20; -fx-alignment: center;");
 

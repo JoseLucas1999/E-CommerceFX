@@ -15,6 +15,7 @@ public class MenuView {
         Button pedidoBtn = new Button("Fazer Pedido");
         Button visualizarPedidosBtn = new Button("Visualizar Pedidos");
         Button estoqueBtn = new Button("Visualizar Estoque");
+        Button visualizarClientesBtn = new Button("Visualizar Clientes");
         Button sairBtn = new Button("Sair");
 
         produtoBtn.setOnAction(e -> {
@@ -28,8 +29,8 @@ public class MenuView {
         });
 
         pedidoBtn.setOnAction(e -> {
-            PedidoView pedidoView = new PedidoView();
-            stage.setScene(pedidoView.getScene(stage));
+            FazerPedidoView fazerPedidoView = new FazerPedidoView();
+            stage.setScene(fazerPedidoView.getScene(stage));
         });
 
         visualizarPedidosBtn.setOnAction(e -> {
@@ -42,15 +43,33 @@ public class MenuView {
             VisualizarEstoqueView visualizarEstoqueView = new VisualizarEstoqueView();
             stage.setScene(visualizarEstoqueView.getScene(stage));
         });
+        
+        visualizarClientesBtn.setOnAction(e -> {
+            VisualizarClientesView visualizarClientesView = new VisualizarClientesView();
+            stage.setScene(visualizarClientesView.getScene(stage));
+        });
 
         sairBtn.setOnAction(e -> {
             LoginView loginView = new LoginView();
             stage.setScene(loginView.getScene(stage));
         });
 
-        VBox vbox = new VBox(12, title, produtoBtn, clienteBtn, pedidoBtn, visualizarPedidosBtn, estoqueBtn, sairBtn);
-        vbox.setStyle("-fx-padding: 30; -fx-alignment: center;");
+        /*VBox vbox = new VBox(12, title, produtoBtn, clienteBtn, pedidoBtn, visualizarPedidosBtn, estoqueBtn, visualizarClientesBtn, sairBtn);
+        vbox.getStyleClass().add("vbox");
+        //vbox.setStyle("-fx-padding: 30; -fx-alignment: center;");
+        
+        Scene scene = new Scene(vbox, 400, 500);
+        scene.getStylesheets().add(getClass().getResource("menu.css").toExternalForm());
+        return scene;*/
+        
+        VBox vbox = new VBox(12, title, produtoBtn, clienteBtn, pedidoBtn, visualizarPedidosBtn, estoqueBtn, visualizarClientesBtn, sairBtn);
+        vbox.setStyle("-fx-padding: 20; -fx-alignment: center;");
 
-        return new Scene(vbox, 400, 400);
+        return new Scene(vbox, 400, 500);
+        
+        
+        
+        
+
     }
 }

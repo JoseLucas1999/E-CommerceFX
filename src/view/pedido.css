@@ -1,0 +1,68 @@
+/* VBox da tela de Pedido */
+.vbox-pedido {
+    -fx-padding: 30;
+    -fx-spacing: 14;
+    -fx-alignment: center;
+    -fx-background-color: #2e2e2e; /* Fundo escuro */
+}
+
+/* Título "Novo Pedido" */
+.label-title {
+    -fx-font-size: 22px;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 10 0;
+}
+
+/* ComboBox, DatePicker e TextField */
+.combo-box, .date-picker, .text-field {
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-border-color: #666666;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 6 10;
+    -fx-pref-width: 250px;
+}
+
+/* Campos focados */
+.combo-box:focused, .date-picker:focused, .text-field:focused {
+    -fx-background-color: #454545;
+}
+
+/* Botões */
+.button {
+    -fx-background-color: #4a4a4a;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-border-color: #666666;
+    -fx-cursor: hand;
+}
+
+/* Botões - hover */
+.button:hover {
+    -fx-background-color: #5c5c5c;
+}
+
+/* Botões - pressed */
+.button:pressed {
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: #ffffff;
+}
+
+/* Mensagem de sucesso ou erro */
+.label-msg {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ff6666; /* Erro por padrão */
+}
+
+/* Sucesso (você pode trocar isso via código) */
+.label-msg.success {
+    -fx-text-fill: #66ff66;
+}
